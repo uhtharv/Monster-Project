@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monster Energy 3D Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ── Navbar ──────────────────────────────────────── -->
+    <nav id="navbar">
+      <a href="#" class="nav-logo">
+        <img src="monster-energy-1.svg" alt="Monster Energy" />
+      </a>
+      <button id="menu-btn" aria-label="Menu">
+        <img src="monster-logo-1.svg" alt="Menu" />
+      </button>
+    </nav>
+
+    <!-- ── Full-screen Menu Overlay ────────────────────── -->
+    <div id="menu-overlay">
+      <!-- Animated background claw -->
+      <div class="menu-bg-claw">
+        <img src="monster-logo-1.svg" alt="" />
+      </div>
+
+      <!-- Scanline / glitch decoration -->
+      <div class="menu-scanlines"></div>
+
+      <!-- Menu items -->
+      <ul class="menu-list">
+        <li class="menu-item" style="--i: 0">
+          <a href="#" class="menu-link" data-text="History">
+            <span class="menu-index">01</span>
+            <span class="menu-text">History</span>
+          </a>
+        </li>
+        <li class="menu-item" style="--i: 1">
+          <a href="#" class="menu-link" data-text="Shop">
+            <span class="menu-index">02</span>
+            <span class="menu-text">Shop</span>
+          </a>
+        </li>
+        <li class="menu-item" style="--i: 2">
+          <a href="#" class="menu-link" data-text="Products">
+            <span class="menu-index">03</span>
+            <span class="menu-text">Products</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Bottom decorative bar -->
+      <div class="menu-footer">
+        <div class="menu-footer-line"></div>
+        <p class="menu-footer-text">Unleash The Beast&trade;</p>
+      </div>
+    </div>
+
+    <!-- Background logo -->
+    <div id="logo-depth-wrapper">
+      <img id="logo-bg" src="monster-logo-1.svg" alt="Monster Logo" />
+    </div>
+
+    <!-- 3D can layer -->
+    <div id="container3D"></div>
+
+    <!-- ── Hero text blocks (home section) ────────────── -->
+    <div id="hero-text-left" class="hero-text">
+      <span>Unleash</span>
+      <span>The</span>
+      <span>Energy</span>
+    </div>
+    <div id="hero-text-right" class="hero-text">
+      <span>Fuel</span>
+      <span>The</span>
+      <span>Beast</span>
+    </div>
+
+    <!-- Section 1: Flavor info -->
+    <div id="flavor-info" class="info-panel left-panel">
+      <h1 class="flavor-title">The Original<br />Green Monster<br />Energy</h1>
+      <div class="flavor-divider"></div>
+      <p class="flavor-subtitle">Flavor Profile</p>
+      <p class="flavor-desc">Sweet and Salty — It tastes like Monster!</p>
+    </div>
+
+    <!-- Section 2: Caffeine info -->
+    <div id="caffeine-info" class="info-panel right-panel">
+      <p class="caffeine-label">Total Caffeine</p>
+      <h1 class="caffeine-value">160<span class="caffeine-unit">mg</span></h1>
+      <p class="caffeine-sub">per 16 fl oz can</p>
+    </div>
+
+    <!-- Scroll spacer -->
+    <div id="scroll-spacer"></div>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,504 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* When menu is open, prevent body scroll */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* ── Navbar ───────────────────────────────────────────── */
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 200;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  transition: background 0.3s ease;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.nav-logo img {
+  height: 28px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.nav-logo img:hover {
+  filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(76, 255, 0, 0.6));
+  transform: scale(1.05);
+}
+
+#menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.3s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 210;
+}
+
+#menu-btn:hover {
+  background: rgba(76, 255, 0, 0.1);
+  transform: scale(1.1);
+}
+
+#menu-btn img {
+  height: 36px;
+  width: auto;
+  transition: filter 0.3s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#menu-btn:hover img {
+  filter: drop-shadow(0 0 10px rgba(76, 255, 0, 0.5));
+}
+
+/* When menu is open, rotate the claw button */
+#menu-btn.active {
+  background: rgba(76, 255, 0, 0.15);
+}
+
+#menu-btn.active img {
+  transform: rotate(180deg);
+  filter: drop-shadow(0 0 16px rgba(76, 255, 0, 0.8));
+}
+
+/* ══════════════════════════════════════════════════════════
+   FULL-SCREEN MENU OVERLAY
+   ══════════════════════════════════════════════════════════ */
+#menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  /* Hidden by default */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  /* Background */
+  background: radial-gradient(
+    ellipse at 30% 50%,
+    rgba(10, 40, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.97) 60%,
+    rgba(0, 0, 0, 0.99) 100%
+  );
+
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+/* ── Background claw decoration ───────────────────────── */
+.menu-bg-claw {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%) scale(1.2);
+  opacity: 0;
+  transition: opacity 0.8s ease 0.2s, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+}
+
+.open .menu-bg-claw {
+  opacity: 0.06;
+  transform: translateY(-50%) scale(1);
+}
+
+.menu-bg-claw img {
+  height: 90vh;
+  width: auto;
+}
+
+/* ── Scanlines decoration ─────────────────────────────── */
+.menu-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(76, 255, 0, 0.015) 2px,
+    rgba(76, 255, 0, 0.015) 4px
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.3s;
+}
+
+.open .menu-scanlines {
+  opacity: 1;
+}
+
+/* ── Menu list ────────────────────────────────────────── */
+.menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 12%;
+  align-self: flex-start;
+  z-index: 2;
+}
+
+.menu-item {
+  overflow: hidden;
+}
+
+.menu-link {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  text-decoration: none;
+  padding: 0.8rem 0;
+  position: relative;
+
+  /* Start hidden and shifted */
+  opacity: 0;
+  transform: translateX(-80px) skewX(-5deg);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(0.15s + var(--i) * 0.1s);
+}
+
+.open .menu-link {
+  opacity: 1;
+  transform: translateX(0) skewX(0deg);
+}
+
+.menu-index {
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: #4cff00;
+  opacity: 0.5;
+  min-width: 2.5rem;
+  transition: opacity 0.3s ease;
+}
+
+.menu-text {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 1;
+  color: #fff;
+  letter-spacing: 0.04em;
+  transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+/* Hover effect: green glow and slight push */
+.menu-link:hover .menu-text {
+  color: #4cff00;
+  text-shadow:
+    0 0 30px rgba(76, 255, 0, 0.4),
+    0 0 60px rgba(76, 255, 0, 0.15),
+    0 0 120px rgba(76, 255, 0, 0.05);
+  transform: translateX(12px);
+}
+
+.menu-link:hover .menu-index {
+  opacity: 1;
+}
+
+/* Underline sweep on hover */
+.menu-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0.5rem;
+  left: 4rem;
+  height: 2px;
+  width: 0;
+  background: #4cff00;
+  box-shadow: 0 0 8px rgba(76, 255, 0, 0.5);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.menu-link:hover::after {
+  width: calc(100% - 4rem);
+}
+
+/* ── Menu footer ──────────────────────────────────────── */
+.menu-footer {
+  position: absolute;
+  bottom: 3rem;
+  left: 12%;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease 0.5s, transform 0.5s ease 0.5s;
+}
+
+.open .menu-footer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.menu-footer-line {
+  width: 40px;
+  height: 1px;
+  background: rgba(76, 255, 0, 0.4);
+}
+
+.menu-footer-text {
+  font-family: "Inter", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Scroll spacer ────────────────────────────────────── */
+#scroll-spacer {
+  height: 300vh;
+  pointer-events: none;
+}
+
+/* ── Logo background ──────────────────────────────────── */
+#logo-depth-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#logo-bg {
+  width: 55vmin;
+  height: auto;
+  opacity: 0.85;
+  filter: none;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── 3D Canvas ────────────────────────────────────────── */
+#container3D {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  will-change: transform;
+}
+
+#container3D canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* ── Hero Text Blocks (home section) ──────────────────── */
+.hero-text {
+  position: fixed;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: transform 0.1s linear, opacity 0.1s linear;
+}
+
+.hero-text span {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(3.5rem, 7.5vw, 6.5rem);
+  line-height: 0.92;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.12);
+  display: block;
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+/* Glow state — toggled randomly via JS */
+.hero-text span.glow {
+  color: rgba(76, 255, 0, 0.85);
+  text-shadow:
+    0 0 8px rgba(76, 255, 0, 0.6),
+    0 0 20px rgba(76, 255, 0, 0.35),
+    0 0 40px rgba(76, 255, 0, 0.15),
+    0 0 80px rgba(76, 255, 0, 0.05);
+  animation: flicker 0.12s ease-in-out;
+}
+
+/* Rapid on-off flicker mimicking neon tubes */
+@keyframes flicker {
+  0%   { opacity: 1; }
+  10%  { opacity: 0.4; }
+  20%  { opacity: 1; }
+  30%  { opacity: 0.7; }
+  40%  { opacity: 1; }
+  50%  { opacity: 0.5; }
+  60%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+#hero-text-left {
+  left: 3%;
+  text-align: left;
+  transform: translateY(-50%);
+}
+
+#hero-text-right {
+  right: 3%;
+  text-align: right;
+  align-items: flex-end;
+  transform: translateY(-50%);
+}
+
+/* ── Shared info panel styles ─────────────────────────── */
+.info-panel {
+  position: fixed;
+  top: 50%;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+/* ── Flavor Panel (LEFT side) ─────────────────────────── */
+.left-panel {
+  left: 6%;
+  transform: translateY(-50%) translateX(-60px);
+  text-align: left;
+}
+
+.left-panel.visible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.flavor-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.flavor-divider {
+  width: 60px;
+  height: 3px;
+  background: #4cff00;
+  margin: 1rem 0;
+  box-shadow: 0 0 12px rgba(76, 255, 0, 0.5);
+}
+
+.flavor-subtitle {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: #4cff00;
+  margin-bottom: 0.5em;
+}
+
+.flavor-desc {
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+/* ── Caffeine Panel (RIGHT side) ──────────────────────── */
+.right-panel {
+  right: 8%;
+  transform: translateY(-50%) translateX(60px);
+  text-align: right;
+}
+
+.right-panel.visible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.caffeine-label {
+  font-family: "Inter", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.2em;
+}
+
+.caffeine-value {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(6rem, 14vw, 12rem);
+  line-height: 0.9;
+  color: #4cff00;
+  text-shadow: 0 0 40px rgba(76, 255, 0, 0.3), 0 0 80px rgba(76, 255, 0, 0.1);
+}
+
+.caffeine-unit {
+  font-size: 0.35em;
+  color: rgba(255, 255, 255, 0.6);
+  vertical-align: super;
+  margin-left: 0.05em;
+}
+
+.caffeine-sub {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 0.5em;
+  letter-spacing: 0.1em;
+}
