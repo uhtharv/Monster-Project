@@ -63,6 +63,9 @@ loader.load(
     model.rotation.z = THREE.MathUtils.degToRad(-10);
 
     scene.add(model);
+
+    // Hide loader once the 3D model is ready
+    if (window.hideLoader) window.hideLoader();
   },
   (xhr) => {
     console.log(`Loading: ${((xhr.loaded / xhr.total) * 100).toFixed(1)}%`);
@@ -113,29 +116,39 @@ const logoWrapper = document.getElementById("logo-depth-wrapper");
 const heroTextLeft = document.getElementById("hero-text-left");
 const heroTextRight = document.getElementById("hero-text-right");
 
-// ── Random neon flicker on hero words ───────────────────
+// ── Sequential neon flicker on hero words ────────────────
+// Order: UNLEASH(0) → THE(1) → ENERGY(2) → FUEL(3) → THE(4) → BEAST(5)
 const heroSpans = document.querySelectorAll(".hero-text span");
+const flickerOrder = [0, 1, 2, 3, 4, 5]; // indices in DOM order (left 0-2, right 3-5)
+let flickerIndex = 0;
 
-function randomFlicker() {
-  // Pick a random word
-  const span = heroSpans[Math.floor(Math.random() * heroSpans.length)];
+function sequentialFlicker() {
+  const spanIndex = flickerOrder[flickerIndex];
+  const span = heroSpans[spanIndex];
 
-  // Add glow class (triggers CSS animation)
+  // Light up this word
   span.classList.add("glow");
 
-  // Remove glow after a random short duration (150–500ms)
-  const glowDuration = 150 + Math.random() * 350;
+  // Keep it lit for 400ms, then fade
   setTimeout(() => {
     span.classList.remove("glow");
-  }, glowDuration);
+  }, 400);
 
-  // Schedule the next flicker at a random interval (400–1200ms)
-  const nextDelay = 400 + Math.random() * 800;
-  setTimeout(randomFlicker, nextDelay);
+  // Move to next word
+  flickerIndex++;
+
+  if (flickerIndex < flickerOrder.length) {
+    // Next word after a short gap (300ms)
+    setTimeout(sequentialFlicker, 300);
+  } else {
+    // Full sequence done — pause then restart
+    flickerIndex = 0;
+    setTimeout(sequentialFlicker, 1500);
+  }
 }
 
-// Start the flicker loop
-randomFlicker();
+// Start the sequence
+sequentialFlicker();
 
 const sectionHeight = window.innerHeight; // each section = 1 viewport
 
@@ -149,6 +162,11 @@ function mapRange(value, inMin, inMax, outMin, outMax) {
 function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
+
+// ── State variables for scroll rotation ───────────────
+let isScrolledDown = false;
+let offsetAzimuth = 0;
+let targetModelRotation = Math.PI;
 
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
@@ -176,6 +194,42 @@ window.addEventListener("scroll", () => {
 
   let canShiftX = 0;
   let logoShiftX = 0;
+
+  // ── Scroll-based Can Rotation ────────────────────────
+  if (scrollY > 10) {
+    // As soon as we scroll, lock the camera's auto-rotation
+    if (!isScrolledDown) {
+      isScrolledDown = true;
+      controls.autoRotate = false;
+      offsetAzimuth = controls.getAzimuthalAngle();
+    }
+    
+    // Default to front
+    targetModelRotation = Math.PI + offsetAzimuth;
+
+    // Transition Hero -> Flavor (sec1Start to sec2Start)
+    if (scrollY <= sec2Start) {
+      const progress = easeInOutCubic(mapRange(scrollY, 0, sec1End, 0, 1));
+      // Interpolate from its spinning state to facing exactly FRONT
+      targetModelRotation = Math.PI + progress * offsetAzimuth;
+    }
+    // Transition Flavor -> Caffeine (sec2Start to sec3Start)
+    else if (scrollY > sec2Start && scrollY <= sec3End) {
+      const progress = easeInOutCubic(mapRange(scrollY, sec2Start, sec3Start, 0, 1));
+      // Rotate 180 degrees from Front to Back (Ingredients side)
+      targetModelRotation = (Math.PI + offsetAzimuth) - progress * Math.PI;
+    }
+    else if (scrollY > sec3Start) {
+      targetModelRotation = offsetAzimuth; // Fixed at Back (Ingredients side)
+    }
+  } else {
+    // Return to top
+    if (isScrolledDown) {
+      isScrolledDown = false;
+      controls.autoRotate = true;
+    }
+    targetModelRotation = Math.PI;
+  }
 
   // ── SECTION 1 → 2: Hero → Flavor ───────────────────
   // Can moves from center (0) to right (+28vw)
@@ -236,6 +290,12 @@ window.addEventListener("scroll", () => {
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
+
+  // Smoothly interpolate model rotation
+  if (model) {
+    model.rotation.y += (targetModelRotation - model.rotation.y) * 0.08;
+  }
+
   renderer.render(scene, camera);
 }
 animate();
@@ -281,7 +341,11 @@ document.addEventListener("keydown", (e) => {
 // Close menu when clicking a menu link
 document.querySelectorAll(".menu-link").forEach((link) => {
   link.addEventListener("click", (e) => {
-    e.preventDefault();
+    const href = link.getAttribute("href");
+    // Only prevent default for placeholder links
+    if (!href || href === "#") {
+      e.preventDefault();
+    }
     if (menuOpen) toggleMenu();
   });
 });

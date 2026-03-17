@@ -1,0 +1,166 @@
+/* ══════════════════════════════════════════════════════════
+   SHOP PAGE STYLES
+   ══════════════════════════════════════════════════════════ */
+
+.shop-body {
+  background: #050505;
+  overflow-x: hidden;
+}
+
+/* ── Solid Navbar for shop page ───────────────────────── */
+.navbar-solid {
+  background: rgba(0, 0, 0, 0.95) !important;
+  border-bottom: 1px solid rgba(76, 255, 0, 0.08);
+}
+
+.back-link {
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #4cff00;
+}
+
+/* ── Shop Hero ────────────────────────────────────────── */
+.shop-hero {
+  padding: 10rem 4rem 4rem;
+  text-align: center;
+}
+
+.shop-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(5rem, 15vw, 12rem);
+  letter-spacing: 0.05em;
+  color: #fff;
+  line-height: 0.9;
+  text-shadow: 0 0 60px rgba(76, 255, 0, 0.1);
+}
+
+.shop-subtitle {
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(76, 255, 0, 0.5);
+  margin-top: 0.8rem;
+}
+
+/* ── Products Section ─────────────────────────────────── */
+.products-section {
+  padding: 4rem 4rem 8rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.products-grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6rem;
+  flex-wrap: wrap;
+}
+
+/* ── Product Card ─────────────────────────────────────── */
+.product-card {
+  text-align: center;
+  flex: 0 1 400px;
+}
+
+.product-image-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.product-image {
+  height: 420px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.5s ease;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Levitate on hover ────────────────────────────────── */
+.product-card:hover .product-image {
+  transform: translateY(-30px) scale(1.05);
+}
+
+/* ── Glow beneath can on hover ────────────────────────── */
+.product-glow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 20px;
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0;
+  transition: opacity 0.5s ease, width 0.5s ease;
+  z-index: 1;
+}
+
+.product-card:hover .product-glow {
+  opacity: 1;
+  width: 250px;
+}
+
+.green-glow {
+  background: rgba(76, 255, 0, 0.5);
+  box-shadow: 0 0 40px rgba(76, 255, 0, 0.3);
+}
+
+.white-glow {
+  background: rgba(200, 220, 255, 0.5);
+  box-shadow: 0 0 40px rgba(200, 220, 255, 0.3);
+}
+
+/* ── Product text ─────────────────────────────────────── */
+.product-name {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  margin-top: 1.5rem;
+  transition: text-shadow 0.3s ease;
+}
+
+.product-card:hover .product-name {
+  text-shadow: 0 0 20px rgba(76, 255, 0, 0.3);
+}
+
+.product-flavor {
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 0.3rem;
+}
+
+/* ── Shop footer (shorter) ────────────────────────────── */
+.shop-footer {
+  min-height: auto !important;
+  padding: 3rem 4rem 2rem !important;
+}
+
+.shop-footer .footer-inner {
+  flex: unset !important;
+}
+
+.shop-footer .footer-logo img {
+  max-width: 300px !important;
+}
