@@ -58,9 +58,9 @@ loader.load(
     model.position.sub(scaledCenter);
 
     // Tilt the can
-    model.rotation.x = THREE.MathUtils.degToRad(15);
+    model.rotation.x = THREE.MathUtils.degToRad(-10);
     model.rotation.y = Math.PI;
-    model.rotation.z = THREE.MathUtils.degToRad(-10);
+    model.rotation.z = THREE.MathUtils.degToRad(10);
 
     scene.add(model);
 
@@ -203,7 +203,7 @@ window.addEventListener("scroll", () => {
       controls.autoRotate = false;
       offsetAzimuth = controls.getAzimuthalAngle();
     }
-    
+
     // Default to front
     targetModelRotation = Math.PI + offsetAzimuth;
 
@@ -211,13 +211,13 @@ window.addEventListener("scroll", () => {
     if (scrollY <= sec2Start) {
       const progress = easeInOutCubic(mapRange(scrollY, 0, sec1End, 0, 1));
       // Interpolate from its spinning state to facing exactly FRONT
-      targetModelRotation = Math.PI + progress * offsetAzimuth;
+      targetModelRotation = (Math.PI * 1.2) + progress * offsetAzimuth;
     }
     // Transition Flavor -> Caffeine (sec2Start to sec3Start)
     else if (scrollY > sec2Start && scrollY <= sec3End) {
       const progress = easeInOutCubic(mapRange(scrollY, sec2Start, sec3Start, 0, 1));
       // Rotate 180 degrees from Front to Back (Ingredients side)
-      targetModelRotation = (Math.PI + offsetAzimuth) - progress * Math.PI;
+      targetModelRotation = (Math.PI + offsetAzimuth) - progress * (Math.PI / 2);
     }
     else if (scrollY > sec3Start) {
       targetModelRotation = offsetAzimuth; // Fixed at Back (Ingredients side)
